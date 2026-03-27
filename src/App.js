@@ -42,6 +42,18 @@ function Square() {
   );
 }
 
+function Avatar({ color = '#8c8c9e2b', label }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <svg width="32" height="32" viewBox="0 0 32 32">
+        <circle cx="16" cy="12" r="8" fill={color} />
+        <circle cx="16" cy="35" r="14" fill={color} />
+      </svg>
+      {label && <span style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>{label}</span>}
+    </div>
+  );
+}
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
@@ -50,6 +62,7 @@ function App() {
   const [leftShape, setLeftShape] = useState('A');
   const [trialPhase, setTrialPhase] = useState('choice');
   const [choices, setChoices] = useState([]);
+  const [userPosition, setUserPosition] = useState(null);
 
   const styles = {
     container: {
@@ -68,7 +81,7 @@ function App() {
       width: '90%',
       boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
       textAlign: 'center',
-      minHeight: '400px',
+      minHeight: '450px',
     },
     title: {
       fontSize: '28px',
@@ -208,41 +221,61 @@ function App() {
           }}>
             Round {currentTrial + 1} of {trials.length}
           </p>
+          
+          {trialPhase === 'choice' && (
+            <div style={{ height: '52px', marginBottom: '16px', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
+              <Avatar color="#6366f1" label="You" />
+            </div>
+          )}
 
-          <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', margin: '40px 0' }}>
-            <button
-              onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
-              style={{
-                width: '100px',
-                height: '100px',
-                fontSize: '32px',
-                fontWeight: 'bold',
-                borderRadius: '16px',
-                border: currentChoice === leftShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
-                background: currentChoice === leftShape ? '#eef2ff' : '#ffffff',
-                cursor: trialPhase === 'choice' ? 'pointer' : 'default',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              }}
-            >
-              {leftShape === 'A' ? <Circle /> : <Square />}
-            </button>
+          {trialPhase !== 'choice' && (
+            <div style={{ height: '68px' }}></div>
+          )}
 
-            <button
-              onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
-              style={{
-                width: '100px',
-                height: '100px',
-                fontSize: '32px',
-                fontWeight: 'bold',
-                borderRadius: '16px',
-                border: currentChoice === rightShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
-                background: currentChoice === rightShape ? '#eef2ff' : '#ffffff',
-                cursor: trialPhase === 'choice' ? 'pointer' : 'default',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              }}
-            >
-              {rightShape === 'A' ? <Circle /> : <Square />}
-            </button>
+          <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>       
+              <div style={{ height: '52px', display: 'flex', alignItems: 'flex-end' }}>
+                {trialPhase !== 'choice' && currentChoice === leftShape && <Avatar color="#6366f1" label="You" />}
+              </div>
+              <button
+                onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  borderRadius: '16px',
+                  border: currentChoice === leftShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
+                  background: currentChoice === leftShape ? '#eef2ff' : '#ffffff',
+                  cursor: trialPhase === 'choice' ? 'pointer' : 'default',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                {leftShape === 'A' ? <Circle /> : <Square />}
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>   
+              <div style={{ height: '52px', display: 'flex', alignItems: 'flex-end' }}>
+                {trialPhase !== 'choice' && currentChoice === rightShape && <Avatar color="#6366f1" label="You" />}
+              </div>           
+              <button
+                onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  fontSize: '32px',
+                  fontWeight: 'bold',
+                  borderRadius: '16px',
+                  border: currentChoice === rightShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
+                  background: currentChoice === rightShape ? '#eef2ff' : '#ffffff',
+                  cursor: trialPhase === 'choice' ? 'pointer' : 'default',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                }}
+              >
+                {rightShape === 'A' ? <Circle /> : <Square />}
+              </button>
+            </div>
           </div>
           {trialPhase === 'social' && (
             <p style={{
