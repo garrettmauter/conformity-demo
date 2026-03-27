@@ -92,6 +92,13 @@ function App() {
       fontWeight: '600',
       cursor: 'pointer',
     },
+    feedback: {
+      padding: '16px 24px',
+      borderRadius: '12px',
+      marginTop: '16px',
+      fontSize: '16px',
+      fontWeight: '500',
+    },
   };
   
   function startGame() {
@@ -238,7 +245,11 @@ function App() {
             </button>
           </div>
           {trialPhase === 'social' && (
-            <p>
+            <p style={{
+              ...styles.feedback,
+              background: trial.social === 'consensus' ? '#f1f5f9' : '#f1f5f9',
+              color: trial.social === 'consensus' ? '#475569' : '#475569',
+            }}>
               {trial.social === 'consensus'
                 ? "The other players chose the same"
                 : "The other players chose differently"}
@@ -247,17 +258,16 @@ function App() {
           
           {trialPhase === 'reward' && (
             <div>
-              <p>
-                {trial.social === 'consensus'
-                  ? "The other players chose the same"
-                  : "The other players chose differently"}
-              </p>
-              <p>
+              <p style={{
+                ...styles.feedback,
+                background: trial.reward === 'win' ? '#ecfdf5' : '#fef2f2',
+                color: trial.reward === 'win' ? '#059669' : '#dc2626',
+              }}>
                 {trial.reward === 'win'
                   ? "You picked the winner!"
                   : "The other machine paid more"}
               </p>
-              <button onClick={nextTrial}>
+              <button style={styles.button} onClick={nextTrial}>
                 {currentTrial < trials.length - 1 ? 'Next Round' : 'See Results'}
 
               </button>
