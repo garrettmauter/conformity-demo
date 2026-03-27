@@ -26,6 +26,22 @@ function generateTrials() {
   return trials;
 }
 
+function Circle() {
+  return (
+    <svg width="60" height="60" viewBox="0 0 60 60">
+      <circle cx="30" cy="30" r="25" fill="#374151" />
+    </svg>
+  );
+}
+
+function Square() {
+  return(
+    <svg width="60" height="60" viewBox="0 0 60 60">
+      <rect x="5" y="5" width="50" height="50" rx="4" fill="#374151" />
+    </svg>
+  );
+}
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
@@ -190,25 +206,35 @@ function App() {
             <button
               onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
               style={{
-                padding: '40px',
-                fontSize: '24px',
-                border: currentChoice === leftShape ? '3px solid blue' : '3px solid #cbd5e1',
-                cursor: trialPhase === 'choice' ? 'pointer' : 'default'
+                width: '100px',
+                height: '100px',
+                fontSize: '32px',
+                fontWeight: 'bold',
+                borderRadius: '16px',
+                border: currentChoice === leftShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
+                background: currentChoice === leftShape ? '#eef2ff' : '#ffffff',
+                cursor: trialPhase === 'choice' ? 'pointer' : 'default',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               }}
             >
-              {leftShape}
+              {leftShape === 'A' ? <Circle /> : <Square />}
             </button>
 
             <button
               onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
-              style = {{
-                padding: '40px',
-                fontSize: '24px',
-                border: currentChoice === rightShape ? '3px solid blue' : '3px solid #cbd5e1',
-                cursor: trialPhase === 'choice' ? 'pointer' : 'default'
+              style={{
+                width: '100px',
+                height: '100px',
+                fontSize: '32px',
+                fontWeight: 'bold',
+                borderRadius: '16px',
+                border: currentChoice === rightShape ? '3px solid #6366f1' : '3px solid #cbd5e1',
+                background: currentChoice === rightShape ? '#eef2ff' : '#ffffff',
+                cursor: trialPhase === 'choice' ? 'pointer' : 'default',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               }}
             >
-              {rightShape}
+              {rightShape === 'A' ? <Circle /> : <Square />}
             </button>
           </div>
           {trialPhase === 'social' && (
