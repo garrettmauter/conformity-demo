@@ -145,15 +145,17 @@ function App() {
 
   if (screen === 'instructions') {
     return (
-      <div>
-        <h2>How it works</h2>
-        <p>1. You'll see two gambling choices</p>
-        <p>2. Pick one</p>
-        <p>3. See what the other players picked</p>
-        <p>4. See which machine paid more</p>
-        <button onClick={() => setScreen('trial')}>
-          Got it
-        </button>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h2 style={styles.title}>How it works</h2>
+          <p>1. You'll see two gambling choices</p>
+          <p>2. Pick one</p>
+          <p>3. See what the other players picked</p>
+          <p>4. See which machine paid more</p>
+          <button style={styles.button} onClick={startGame}>
+            Got it
+          </button>
+        </div>
       </div>
     );
   }
