@@ -35,6 +35,25 @@ function App() {
   const [trialPhase, setTrialPhase] = useState('choice');
   const [choices, setChoices] = useState([]);
 
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    },
+    card: {
+      background: '#ffffff',
+      borderRadius: '24px',
+      padding: '48px',
+      maxWidth: '500px',
+      width: '90%',
+      boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+      textAlign: 'center',
+    },
+  };
   
   function startGame() {
     setTrials(generateTrials());
@@ -89,12 +108,14 @@ function App() {
 
   if (screen === 'welcome') {
     return (
-      <div>
-        <h1>Social Conformity Demo</h1>
-        <p>Do you follow the crowd because belonging is intrinsically rewarding, or are you just copying?</p>
-        <button onClick={() => setScreen('instructions')}>
-          Start
-        </button>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h1>Social Conformity Demo</h1>
+          <p>Do you follow the crowd because belonging is intrinsically rewarding, or are you just copying?</p>
+          <button onClick={() => setScreen('instructions')}>
+            Start
+          </button>
+        </div>
       </div>
     );
   }
