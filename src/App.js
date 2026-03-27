@@ -66,7 +66,7 @@ function App() {
       : null;
       
     const prevCondition = choices.length > 0
-      ? choices[choice.length - 1].condition
+      ? choices[choices.length - 1].condition
       : null;
 
     setChoices([...choices, {
@@ -75,7 +75,7 @@ function App() {
       stayed: stayed,
       prevCondition: prevCondition
     }]);
-    
+
     if (currentTrial < trials.length - 1) {
       setCurrentTrial(currentTrial + 1);
       setCurrentChoice(null);
