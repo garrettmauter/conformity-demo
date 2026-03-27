@@ -52,6 +52,7 @@ function App() {
       width: '90%',
       boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
       textAlign: 'center',
+      minHeight: '400px',
     },
     title: {
       fontSize: '28px',
@@ -170,60 +171,73 @@ function App() {
     const rightShape = leftShape === 'A' ? 'B' : 'A';
 
     return (
-      <div>
-        <p>Round {currentTrial + 1} of {trials.length}</p>
-
-        <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', margin: '40px 0' }}>
-          <button
-            onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
-            style={{
-              padding: '40px',
-              fontSize: '24px',
-              border: currentChoice === leftShape ? '3px solid blue' : '1px solid gray',
-              cursor: trialPhase === 'choice' ? 'pointer' : 'default'
-            }}
-          >
-            {leftShape}
-          </button>
-
-          <button
-            onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
-            style = {{
-              padding: '40px',
-              fontSize: '24px',
-              border: currentChoice === rightShape ? '3px solid blue' : '1px solid gray',
-              cursor: trialPhase === 'choice' ? 'pointer' : 'default'
-            }}
-          >
-            {rightShape}
-          </button>
-        </div>
-        {trialPhase === 'social' && (
-          <p>
-            {trial.social === 'consensus'
-              ? "The other players chose the same"
-              : "The other players chose differently"}
+      <div style={styles.container}>
+        <div style={styles.card}> 
+          <p style={{
+            background: '#f1f5f9',
+            color: '#64748b',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: '500',
+            marginBottom: '32px',
+            display: 'inline-block',
+          }}>
+            Round {currentTrial + 1} of {trials.length}
           </p>
-        )}
-        
-        {trialPhase === 'reward' && (
-          <div>
+
+          <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', margin: '40px 0' }}>
+            <button
+              onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
+              style={{
+                padding: '40px',
+                fontSize: '24px',
+                border: currentChoice === leftShape ? '3px solid blue' : '3px solid #cbd5e1',
+                cursor: trialPhase === 'choice' ? 'pointer' : 'default'
+              }}
+            >
+              {leftShape}
+            </button>
+
+            <button
+              onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
+              style = {{
+                padding: '40px',
+                fontSize: '24px',
+                border: currentChoice === rightShape ? '3px solid blue' : '3px solid #cbd5e1',
+                cursor: trialPhase === 'choice' ? 'pointer' : 'default'
+              }}
+            >
+              {rightShape}
+            </button>
+          </div>
+          {trialPhase === 'social' && (
             <p>
               {trial.social === 'consensus'
                 ? "The other players chose the same"
                 : "The other players chose differently"}
             </p>
-            <p>
-              {trial.reward === 'win'
-                ? "You picked the winner!"
-                : "The other machine paid more"}
-            </p>
-            <button onClick={nextTrial}>
-              {currentTrial < trials.length - 1 ? 'Next Round' : 'See Results'}
+          )}
+          
+          {trialPhase === 'reward' && (
+            <div>
+              <p>
+                {trial.social === 'consensus'
+                  ? "The other players chose the same"
+                  : "The other players chose differently"}
+              </p>
+              <p>
+                {trial.reward === 'win'
+                  ? "You picked the winner!"
+                  : "The other machine paid more"}
+              </p>
+              <button onClick={nextTrial}>
+                {currentTrial < trials.length - 1 ? 'Next Round' : 'See Results'}
 
-            </button>
-          </div>
-        )}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
