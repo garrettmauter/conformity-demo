@@ -53,6 +53,28 @@ function App() {
       boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
       textAlign: 'center',
     },
+    title: {
+      fontSize: '28px',
+      fontWeight: '700',
+      color: '#1e293b',
+      marginBottom: '16px'
+    },
+    subtitle: {
+      fontSize: '16px',
+      color: '#64748b',
+      lineHeight: '1.6',
+      marginBottom: '32px',
+    },
+    button: {
+      background: '#6366f1',
+      color: '#ffffff',
+      border: 'none',
+      borderRadius: '12px',
+      padding: '14px 32px',
+      fontSize: '16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+    },
   };
   
   function startGame() {
@@ -110,10 +132,11 @@ function App() {
     return (
       <div style={styles.container}>
         <div style={styles.card}>
-          <h1>Social Conformity Demo</h1>
-          <p>Do you follow the crowd because belonging is intrinsically rewarding, or are you just copying?</p>
-          <button onClick={() => setScreen('instructions')}>
-            Start
+          <h1 style={styles.title}>Social Conformity</h1>
+          <p style={styles.subtitle}>
+            Do you follow the crowd because belonging is intrinsically rewarding, or are you just copying?          </p>
+          <button style={styles.button} onClick={() => setScreen('instructions')}>
+            Get Started
           </button>
         </div>
       </div>
