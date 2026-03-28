@@ -236,6 +236,18 @@ function App() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>       
               <div style={{ height: '52px', display: 'flex', alignItems: 'flex-end' }}>
                 {trialPhase !== 'choice' && currentChoice === leftShape && <Avatar color="#6366f1" label="You" />}
+                {trialPhase !== 'choice' && trial.social === 'consensus' && currentChoice === leftShape && (
+                  <>
+                    <Avatar color="#94a3b8" label="P1" />
+                    <Avatar color="#94a3b8" label="P2" />
+                  </>
+                )}
+                {trialPhase !== 'choice' && trial.social === 'dissent' && currentChoice !== leftShape && (
+                  <>
+                    <Avatar color="#94a3b8" label="P1" />
+                    <Avatar color="#94a3b8" label="P2" />
+                  </>
+                )}
               </div>
               <button
                 onClick={() => trialPhase === 'choice' && handleChoice(leftShape)}
@@ -258,6 +270,18 @@ function App() {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>   
               <div style={{ height: '52px', display: 'flex', alignItems: 'flex-end' }}>
                 {trialPhase !== 'choice' && currentChoice === rightShape && <Avatar color="#6366f1" label="You" />}
+                {trialPhase !== 'choice' && trial.social === 'consensus' && currentChoice === rightShape && (
+                  <>
+                    <Avatar color="#94a3b8" label="P1" />
+                    <Avatar color="#94a3b8" label="P2" />
+                  </>
+                )}
+                {trialPhase !== 'choice' && trial.social === 'dissent' && currentChoice !== rightShape && (
+                  <>
+                    <Avatar color="#94a3b8" label="P1" />
+                    <Avatar color="#94a3b8" label="P2" />
+                  </>
+                )}
               </div>           
               <button
                 onClick={() => trialPhase === 'choice' && handleChoice(rightShape)}
