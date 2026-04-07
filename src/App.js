@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Chart from 'chart.js/auto';
 
 // Generate shuffled trial sequence
 function generateTrials() {
@@ -82,6 +83,60 @@ function calculateStayProbs(choices) {
   }
   return probs;
 }
+
+function ResultsChart({ probs }) {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
+
+  useEffect(() => {
+    if (!chartRef.current) return;
+
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    chartInstance.current = new Chart(chartRef.current, {
+      type: 'bar',
+      data: {
+        labels: ['Win + Consensus', 'Win + Dissent', 'Lose + Consensus', 'Lose + Dissent'],
+        datasets: [{
+          label: 'Stay probability (%)',
+          data: [
+            probs.win_consensus,
+            probs.win_dissent,
+            probs.lose_consensus,
+            probs.lose_dissent
+          ],
+          backgroundColor: ['#059669', '#10b981', '#dc2626', '#f87171'],
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [probs]);
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '250px', marginBottom: '24px' }}>
+      <canvas ref={chartRef}></canvas>
+    </div>
+  );
+}
+
 
 function App() {
   const [screen, setScreen] = useState('welcome');
@@ -373,12 +428,31 @@ function App() {
           <h2 style={styles.title}>Your results</h2>
           <p style={styles.subtitle}>Stay probability by previous trial condition</p>
           
-          <div>
-            <p>Win + Consensus: {probs.win_consensus}%</p>
-            <p>Win + Dissent: {probs.win_dissent}%</p>
-            <p>Lose + Consensus: {probs.lose_consensus}%</p>
-            <p>Lose + Dissent: {probs.lose_dissent}%</p>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '12px', 
+            marginBottom: '24px' 
+          }}>
+            <div style={{ background: '#ecfdf5', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#059669', marginBottom: '4px' }}>Win + Consensus</div>
+              <div style={{ fontSize: '24px', fontWeight: '600', color: '#059669' }}>{probs.win_consensus}%</div>
+            </div>
+            <div style={{ background: '#ecfdf5', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#059669', marginBottom: '4px' }}>Win + Dissent</div>
+              <div style={{ fontSize: '24px', fontWeight: '600', color: '#059669' }}>{probs.win_dissent}%</div>
+            </div>
+            <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#dc2626', marginBottom: '4px' }}>Lose + Consensus</div>
+              <div style={{ fontSize: '24px', fontWeight: '600', color: '#dc2626' }}>{probs.lose_consensus}%</div>
+            </div>
+            <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '12px' }}>
+              <div style={{ fontSize: '12px', color: '#dc2626', marginBottom: '4px' }}>Lose + Dissent</div>
+              <div style={{ fontSize: '24px', fontWeight: '600', color: '#dc2626' }}>{probs.lose_dissent}%</div>
+            </div>
           </div>
+          
+          <ResultsChart probs={probs} />
 
           <button style={styles.button} onClick={() => setScreen('welcome')}>
             Start over
