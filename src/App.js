@@ -54,6 +54,35 @@ function Avatar({ color = '#8c8c9e2b', label }) {
   );
 }
 
+function calculateStayProbs(choices) {
+  const conditions = {
+    'win_consensus': { stayed: 0, total: 0 },
+    'win_dissent': { stayed: 0, total: 0 },
+    'lose_consensus': { stayed: 0, total: 0 },
+    'lose_dissent': { stayed: 0, total: 0 },  
+  };
+
+  // loop through trials to calculate stay probability
+  for (let i = 1; i < choices.length; i++) {
+    const prev = choices[i - 1];
+    const curr = choices[i];
+    const key = `${prev.condition.reward}_${prev.condition.social}`;
+
+    conditions[key].total++;
+    if (prev.choice === curr.choice) {
+      conditions[key].stayed++;
+    }
+  }
+
+  // convert to probabilities
+  const probs = {};
+  for (const key in conditions) {
+    const { stayed, total } = conditions[key];
+    probs[key] = total > 0 ? Math.round((stayed / total) * 100) : 0;
+  }
+  return probs;
+}
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
@@ -238,14 +267,14 @@ function App() {
                 {trialPhase !== 'choice' && currentChoice === leftShape && <Avatar color="#6366f1" label="You" />}
                 {trialPhase !== 'choice' && trial.social === 'consensus' && currentChoice === leftShape && (
                   <>
-                    <Avatar color="#94a3b8" label="P1" />
                     <Avatar color="#94a3b8" label="P2" />
+                    <Avatar color="#94a3b8" label="P3" />
                   </>
                 )}
                 {trialPhase !== 'choice' && trial.social === 'dissent' && currentChoice !== leftShape && (
                   <>
-                    <Avatar color="#94a3b8" label="P1" />
                     <Avatar color="#94a3b8" label="P2" />
+                    <Avatar color="#94a3b8" label="P3" />
                   </>
                 )}
               </div>
@@ -272,14 +301,14 @@ function App() {
                 {trialPhase !== 'choice' && currentChoice === rightShape && <Avatar color="#6366f1" label="You" />}
                 {trialPhase !== 'choice' && trial.social === 'consensus' && currentChoice === rightShape && (
                   <>
-                    <Avatar color="#94a3b8" label="P1" />
                     <Avatar color="#94a3b8" label="P2" />
+                    <Avatar color="#94a3b8" label="P3" />
                   </>
                 )}
                 {trialPhase !== 'choice' && trial.social === 'dissent' && currentChoice !== rightShape && (
                   <>
-                    <Avatar color="#94a3b8" label="P1" />
                     <Avatar color="#94a3b8" label="P2" />
+                    <Avatar color="#94a3b8" label="P3" />
                   </>
                 )}
               </div>           
@@ -336,11 +365,25 @@ function App() {
   }
 
   if (screen === 'results') {
+    const probs = calculateStayProbs(choices);
+
     return (
-      <div>
-        <h2>Results</h2>
-        <p>Calculate stay probs here</p>
-        <button onClick={() => setScreen('welcome')}>Start Over</button>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h2 style={styles.title}>Your results</h2>
+          <p style={styles.subtitle}>Stay probability by previous trial condition</p>
+          
+          <div>
+            <p>Win + Consensus: {probs.win_consensus}%</p>
+            <p>Win + Dissent: {probs.win_dissent}%</p>
+            <p>Lose + Consensus: {probs.lose_consensus}%</p>
+            <p>Lose + Dissent: {probs.lose_dissent}%</p>
+          </div>
+
+          <button style={styles.button} onClick={() => setScreen('welcome')}>
+            Start over
+          </button>
+        </div>
       </div>
     );
   }
