@@ -422,6 +422,21 @@ function App() {
   if (screen === 'results') {
     const probs = calculateStayProbs(choices);
 
+    const consensusEffect = ((probs.win_consensus + probs.lose_consensus) / 2) - 
+                        ((probs.win_dissent + probs.lose_dissent) / 2);
+    const rewardEffect = ((probs.win_consensus + probs.win_dissent) / 2) - 
+                     ((probs.lose_consensus + probs.lose_dissent) / 2);
+    let interpretation;
+    if (rewardEffect > 10 && consensusEffect <= 10) {
+      interpretation = "Your decision pattern is consistent with imitation — you stayed with winning choices regardless of what others chose. This suggests you're copying successful actions rather than seeking social agreement."; 
+    } else if (consensusEffect > 10 && rewardEffect <= 10) {
+      interpretation = "Your decision pattern is consistent with the social reward model — you stayed more with consensus choices regardless of winning. This suggests agreement itself feels rewarding to you.";
+    } else if (rewardEffect > 10 && consensusEffect > 10) {
+      interpretation = "Your decision pattern shows both effects — you stayed more after wins AND after consensus. Both monetary reward and social belonging seem to influence your choices.";
+    } else {
+      interpretation = "Your decision pattern doesn't show a strong effect in either direction. With only 16 trials, this isn't unusual — the real experiment uses many more trials to detect these effects reliably.";
+    }
+
     return (
       <div style={styles.container}>
         <div style={styles.card}>
@@ -451,9 +466,17 @@ function App() {
               <div style={{ fontSize: '24px', fontWeight: '600', color: '#dc2626' }}>{probs.lose_dissent}%</div>
             </div>
           </div>
-          
-          <ResultsChart probs={probs} />
 
+          <ResultsChart probs={probs} />
+          <p style={{ 
+            fontSize: '14px', 
+            color: '#64748b', 
+            lineHeight: '1.6',
+            marginBottom: '24px',
+            textAlign: 'left'
+          }}>
+            {interpretation}
+          </p>
           <button style={styles.button} onClick={() => setScreen('welcome')}>
             Start over
           </button>
