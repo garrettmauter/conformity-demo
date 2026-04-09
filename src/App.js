@@ -237,6 +237,11 @@ function computeNLL(params, trials, modelType) {
     // add UCB exploration bonus
     valA += Math.sqrt(2 * Math.log(i + 1) / freqVals.A);
     valB += Math.sqrt(2 * Math.log(i + 1) / freqVals.B);
+
+    // softmax choice probability
+    const beta = params[params.length - 1]; //decision noise 
+    const probA = Math.exp(beta * valA) / Math.exp(beta * valA) + Math.exp(beta * valB);
+    const probChosen = choice === 'A' ? probA : 1 - probA;
   }
 
   return nll;
