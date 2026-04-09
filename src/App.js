@@ -233,6 +233,10 @@ function computeNLL(params, trials, modelType) {
       valA = sumVals.A;
       valB = sumVals.B;
     }
+
+    // add UCB exploration bonus
+    valA += Math.sqrt(2 * Math.log(i + 1) / freqVals.A);
+    valB += Math.sqrt(2 * Math.log(i + 1) / freqVals.B);
   }
 
   return nll;
