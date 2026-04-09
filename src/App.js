@@ -219,7 +219,21 @@ function computeNLL(params, trials, modelType) {
 
   let nll = 0;
   
-  // trial loop here
+  // trial loop
+  for (let i = 0; i < trials.length; i++) {
+    const trial = trials[i];
+    const choice = trial.choice;
+
+    // get current values for each option
+    let valA, valB;
+    if (modelType === 'hybrid' || modelType === 'imitation') {
+      valA = actVals.A + payVals.A;
+      valB = actVals.B + payVals.B;
+    } else {
+      valA = sumVals.A;
+      valB = sumVals.B;
+    }
+  }
 
   return nll;
 }
