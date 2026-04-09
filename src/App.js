@@ -242,6 +242,9 @@ function computeNLL(params, trials, modelType) {
     const beta = params[params.length - 1]; //decision noise 
     const probA = Math.exp(beta * valA) / Math.exp(beta * valA) + Math.exp(beta * valB);
     const probChosen = choice === 'A' ? probA : 1 - probA;
+    
+    // nll
+    nll -= Math.log(Math.max(probChosen, 1e-10));  // clamp to avoid log(0)
   }
 
   return nll;
