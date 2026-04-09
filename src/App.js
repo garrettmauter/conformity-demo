@@ -153,18 +153,19 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
   // clamp
   const clamp = (x) => x.map((v, i) => Math.max(bounds.lower[i], Math.min(bounds.upper[i], v)));
 
+  // optimization loop
   for (let iter = 0; iter < maxIter; iter++) {
     simplex.sort((a, b) => a.f - b.f);
     if (Math.abs(simplex[n].f - simplex[0].f) < tol) break;
   
-
+    // compute centroid - avg position of all vertices except worst
     let centroid = new Array(n).fill(0);
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         centroid[j] += simplex[i].x[j] / n;
       }
     }
-
+    // reflection - feflect worst vertex through centroid to opposite side
     let xr = clamp(centroid.map((c, i) => c + alpha * (c - simplex[n].x[i])));
     let fr = fn(xr);
 
@@ -173,6 +174,7 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
       continue;
     }
 
+    // expansion
     if (fr < simplex[0].f) {
       let xe = clamp(centroid.map((c, i) => c + gamma * (xr[i] - c)));
       let fe = fn(xe);
@@ -180,6 +182,7 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
       continue;
     }
 
+    // contraction - if reflection didn't work
     let xc = clamp(centroid.map((c, i) => c + rh * (simplex[n].x[i] - c)));
     let fc = fn(xc);
     if (fc < simplex[n].f) {
@@ -187,12 +190,14 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
       continue;
     }
 
+    // shrink - last resort
     for (let i = 1; i <= n; i++) {
       simplex[i].x = clamp(simplex[0].x.map((v, j) => v + sigma * (simplex[i].x[j] - v)));
       simplex[i].f = fn(simplex[i].x);
     }
   }
 
+  // final sort, return best vertex's params and func value (NLL)
   simplex.sort((a, b) => a.f - b.f);
   return { params: simplex[0].x, nll: simplex[0].f };
 }
