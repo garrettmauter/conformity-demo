@@ -138,6 +138,66 @@ function ResultsChart({ probs }) {
 }
 
 
+function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
+  const n = x0.length;
+  const alpha = 1, gamma = 2, rho = 0.5, sigma = 0.5;
+
+  // initialize simplex
+  let simplex = [{ x: x0, f: fn(x0) }];
+  for (let i = 0; i < n; i++) {
+    let xi = [...x0];
+    xi[i] = xi[i] + (bounds.upper[i] - bounds.lower[i]) * 0.1;
+    simplex.push({ x: xi, f: fn(xi) });
+  }
+
+  // clamp
+  const clamp = (x) => x.map((v, i) => Math.max(bounds.lower[i], Math.min(bounds.upper[i], v)));
+
+  for (let iter = 0; iter < maxIter; iter++) {
+    simplex.sort((a, b) => a.f - b.f);
+    if (Math.abs(simplex[n].f - simplex[0].f) < tol) break;
+  
+
+    let centroid = new Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        centroid[j] += simplex[i].x[j] / n;
+      }
+    }
+
+    let xr = clamp(centroid.map((c, i) => c + alpha * (c - simplex[n].x[i])));
+    let fr = fn(xr);
+
+    if (fr < simplex[n - 1].f && fr >= simplex[0].f) {
+      simplex[n] = { x: xr, f: fr };
+      continue;
+    }
+
+    if (fr < simplex[0].f) {
+      let xe = clamp(centroid.map((c, i) => c + gamma * (xr[i] - c)));
+      let fe = fn(xe);
+      simplex[n] = fe < fr ? { x: xe, f: fe } : { x: xr, f: fr };
+      continue;
+    }
+
+    let xc = clamp(centroid.map((c, i) => c + rh * (simplex[n].x[i] - c)));
+    let fc = fn(xc);
+    if (fc < simplex[n].f) {
+      simplex[n] = { x: xc, f: fc };
+      continue;
+    }
+
+    for (let i = 1; i <= n; i++) {
+      simplex[i].x = clamp(simplex[0].x.map((v, j) => v + sigma * (simplex[i].x[j] - v)));
+      simplex[i].f = fn(simplex[i].x);
+    }
+  }
+
+  simplex.sort((a, b) => a.f - b.f);
+  return { params: simplex[0].x, nll: simplex[0].f };
+}
+
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
@@ -428,13 +488,13 @@ function App() {
                      ((probs.lose_consensus + probs.lose_dissent) / 2);
     let interpretation;
     if (rewardEffect > 10 && consensusEffect <= 10) {
-      interpretation = "Your decision pattern is consistent with imitation — you stayed with winning choices regardless of what others chose. This suggests you're copying successful actions rather than seeking social agreement."; 
+      interpretation = "Your decision pattern is consistent with imitation: you stayed more with winning choices regardless of what others chose. This suggests you're copying successful actions rather than seeking social agreement."; 
     } else if (consensusEffect > 10 && rewardEffect <= 10) {
-      interpretation = "Your decision pattern is consistent with the social reward model — you stayed more with consensus choices regardless of winning. This suggests agreement itself feels rewarding to you.";
+      interpretation = "Your decision pattern is consistent with the social reward model: you stayed more with consensus choices regardless of winning. This suggests agreement itself feels rewarding to you.";
     } else if (rewardEffect > 10 && consensusEffect > 10) {
-      interpretation = "Your decision pattern shows both effects — you stayed more after wins AND after consensus. Both monetary reward and social belonging seem to influence your choices.";
+      interpretation = "Your decision pattern shows both effects: you stayed more after wins AND after consensus. Both monetary reward and social agreement seem to influence your choices.";
     } else {
-      interpretation = "Your decision pattern doesn't show a strong effect in either direction. With only 16 trials, this isn't unusual — the real experiment uses many more trials to detect these effects reliably.";
+      interpretation = "Your decision pattern doesn't show a strong effect in either direction. With only 16 trials, this isn't unusual. The real experiment uses many more trials to detect these effects reliably.";
     }
 
     return (
