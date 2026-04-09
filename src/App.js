@@ -197,6 +197,28 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
   return { params: simplex[0].x, nll: simplex[0].f };
 }
 
+function computeNLL(params, trials, modelType) {
+  // model types: hybrid, imitation, social, baseline
+
+  //initialize values for shapes
+  let freqVals = { A: 1, B: 1 }; // for UCB
+
+  let actVals, payVals, sumVals;
+
+  if (modelType === 'hybrid' || modelType === 'imitation') {
+    actVals = { A: 0, B: 0 };
+    payVals = { A: 0.5, B: 0.5 };
+  } else {
+    sumVals = { A: 0.5, B: 0.5 };
+  }
+
+  let nll = 0;
+  
+  // trial loop here
+
+  return nll;
+}
+
 
 function App() {
   const [screen, setScreen] = useState('welcome');
