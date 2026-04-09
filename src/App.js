@@ -165,7 +165,7 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
         centroid[j] += simplex[i].x[j] / n;
       }
     }
-    // reflection - feflect worst vertex through centroid to opposite side
+    // reflection - reflect worst vertex through centroid to opposite side
     let xr = clamp(centroid.map((c, i) => c + alpha * (c - simplex[n].x[i])));
     let fr = fn(xr);
 
