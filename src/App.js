@@ -342,7 +342,10 @@ function ModelComparison({ results, best }) {
 
   return (
     <div style={{ marginTop: '2rem' }}>
-      <h3 style={{ marginBottom: '1rem' }}>Model Comparison</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>Model Comparison</h3>
+      <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '0.5rem' }}>
+        Lower AIC = better fit to your choices.
+      </p>
       <div style={{ display: 'grid', gap: '0.5rem' }}>
         {Object.entries(results).map(([model, { aic }]) => (
           <div 
@@ -681,41 +684,16 @@ function App() {
           <h2 style={styles.title}>Your results</h2>
           <p style={styles.subtitle}>Stay probability by previous trial condition</p>
           
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: '1fr 1fr', 
-            gap: '12px', 
-            marginBottom: '24px' 
-          }}>
-            <div style={{ background: '#ecfdf5', padding: '16px', borderRadius: '12px' }}>
-              <div style={{ fontSize: '12px', color: '#059669', marginBottom: '4px' }}>Win + Consensus</div>
-              <div style={{ fontSize: '24px', fontWeight: '600', color: '#059669' }}>{probs.win_consensus}%</div>
-            </div>
-            <div style={{ background: '#ecfdf5', padding: '16px', borderRadius: '12px' }}>
-              <div style={{ fontSize: '12px', color: '#059669', marginBottom: '4px' }}>Win + Dissent</div>
-              <div style={{ fontSize: '24px', fontWeight: '600', color: '#059669' }}>{probs.win_dissent}%</div>
-            </div>
-            <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '12px' }}>
-              <div style={{ fontSize: '12px', color: '#dc2626', marginBottom: '4px' }}>Lose + Consensus</div>
-              <div style={{ fontSize: '24px', fontWeight: '600', color: '#dc2626' }}>{probs.lose_consensus}%</div>
-            </div>
-            <div style={{ background: '#fef2f2', padding: '16px', borderRadius: '12px' }}>
-              <div style={{ fontSize: '12px', color: '#dc2626', marginBottom: '4px' }}>Lose + Dissent</div>
-              <div style={{ fontSize: '24px', fontWeight: '600', color: '#dc2626' }}>{probs.lose_dissent}%</div>
-            </div>
-          </div>
 
           <ResultsChart probs={probs} />
-          <p style={{ 
-            fontSize: '14px', 
-            color: '#64748b', 
-            lineHeight: '1.6',
-            marginBottom: '24px',
-            textAlign: 'left'
-          }}>
-            {interpretation}
-          </p>
+
           <ModelComparison results={modelFitResults} best={bestModel} />
+          <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '0.5rem' }}>
+
+  Note: 16 trials provides limited statistical power. 
+  <br></br>
+  The full study uses 150 trials per participant.
+</p>
           <button style={styles.button} onClick={() => setScreen('welcome')}>
             Start over
           </button>
