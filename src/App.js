@@ -274,6 +274,65 @@ function computeNLL(params, trials, modelType) {
 }
 
 
+function fitModels(trials) {
+  const models = {
+    hybrid: {
+      x0: [0.5, 0.5, 0.5, 5],
+      bounds: {
+        lower: [0.01, 0.01, 0.01, 1],
+        upper: [0.99, 0.99, 0.99, 10]
+      },
+      k: 4
+    },
+    imitation: {
+      x0: [0.5, 0.5, 5],
+      bounds: {
+        lower: [0.01, 0.01, 1],
+        upper: [0.99, 0.99, 10]
+      },
+      k: 3
+    },
+    social: {
+      x0: [0.5, 0.5, 5],
+      bounds: {
+        lower: [0.01, 0.01, 1],
+        upper: [0.99, 0.99, 10]
+      },
+      k: 3
+    },
+    baseline: {
+      x0: [0.5, 5],
+      bounds: {
+        lower: [0.01, 1],
+        upper: [0.99, 10]
+      },
+      k: 2
+    }
+  }
+
+  const results = {};
+
+  for (const [modelType, config] of Object.entries(models)) {
+    const { params, nll } = nelderMead(
+      (p) => computeNLL(p, trials, modelType),
+      config.x0,
+      config.bounds
+    );
+
+    const aic = 2 * config.k + 2 * nll;
+
+    results[modelType] = { params, nll, aic };
+  }
+
+  // get best model fit (lowest AIC)
+  const best = Object.entries(results).reduce((a, b) =>
+    a[1].aic < b[1].aic ? a : b
+  )[0];
+
+  return { results, best };
+}
+
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
