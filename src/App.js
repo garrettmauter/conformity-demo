@@ -659,12 +659,6 @@ function App() {
     const probs = calculateStayProbs(choices);
 
 
-    const consensusEffect = ((probs.win_consensus + probs.lose_consensus) / 2) - 
-                        ((probs.win_dissent + probs.lose_dissent) / 2);
-    const rewardEffect = ((probs.win_consensus + probs.win_dissent) / 2) - 
-                     ((probs.lose_consensus + probs.lose_dissent) / 2);
-
-
     // model fitting
     const { results: modelFitResults, best: bestModel } = fitModels(choices);
 
