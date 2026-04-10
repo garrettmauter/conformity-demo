@@ -183,7 +183,7 @@ function nelderMead(fn, x0, bounds, maxIter = 500, tol = 1e-6) {
     }
 
     // contraction - if reflection didn't work
-    let xc = clamp(centroid.map((c, i) => c + rh * (simplex[n].x[i] - c)));
+    let xc = clamp(centroid.map((c, i) => c + rho * (simplex[n].x[i] - c)));
     let fc = fn(xc);
     if (fc < simplex[n].f) {
       simplex[n] = { x: xc, f: fc };
@@ -333,7 +333,7 @@ function fitModels(trials) {
 }
 
 
-function modelComparison({ results, best }) {
+function ModelComparison({ results, best }) {
   const modelNames = {
     hybrid: 'Hybrid',
     imitation: 'Imitation',
@@ -656,7 +656,7 @@ function App() {
 
   if (screen === 'results') {
     const probs = calculateStayProbs(choices);
-    const modelResults = fitModels(choices);
+
 
     const consensusEffect = ((probs.win_consensus + probs.lose_consensus) / 2) - 
                         ((probs.win_dissent + probs.lose_dissent) / 2);
@@ -716,7 +716,7 @@ function App() {
           }}>
             {interpretation}
           </p>
-          <modelComparison results={modelFitResults} best={bestModel} />
+          <ModelComparison results={modelFitResults} best={bestModel} />
           <button style={styles.button} onClick={() => setScreen('welcome')}>
             Start over
           </button>
