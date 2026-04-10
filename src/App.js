@@ -333,6 +333,46 @@ function fitModels(trials) {
 }
 
 
+function modelComparison({ results, best }) {
+  const modelNames = {
+    hybrid: 'Hybrid',
+    imitation: 'Imitation',
+    social: 'Social Reward',
+    baseline: 'Baseline (Money Only)'
+  };
+
+  return (
+    <div style={{ marginTop: '2rem' }}>
+      <h3 style={{ marginBottom: '1rem' }}>Model Comparison</h3>
+      <div style={{ display: 'grid', gap: '0.5rem' }}>
+        {Object.entries(results).map(([model, { aic }]) => (
+          <div 
+            key={model}
+            style={{
+              padding: '0.75rem 1rem',
+              borderRadius: '8px',
+              backgroundColor: model === best ? '#10b981' : '#f3f4f6',
+              color: model === best ? 'white' : '#374151',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <span style={{ fontWeight: model === best ? 600 : 400 }}>
+              {modelNames[model]}
+              {model === best && ' ✓'}
+            </span>
+            <span style={{ fontSize: '0.875rem' }}>
+              AIC: {aic.toFixed(1)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [trials, setTrials] = useState(() => generateTrials());
@@ -616,6 +656,7 @@ function App() {
 
   if (screen === 'results') {
     const probs = calculateStayProbs(choices);
+    const modelResults = fitModels(choices);
 
     const consensusEffect = ((probs.win_consensus + probs.lose_consensus) / 2) - 
                         ((probs.win_dissent + probs.lose_dissent) / 2);
@@ -631,6 +672,9 @@ function App() {
     } else {
       interpretation = "Your decision pattern doesn't show a strong effect in either direction. With only 16 trials, this isn't unusual. The real experiment uses many more trials to detect these effects reliably.";
     }
+
+    // model fitting
+    const { results: modelFitResults, best: bestModel } = fitModels(choices);
 
     return (
       <div style={styles.container}>
@@ -672,6 +716,7 @@ function App() {
           }}>
             {interpretation}
           </p>
+          <modelComparison results={modelFitResults} best={bestModel} />
           <button style={styles.button} onClick={() => setScreen('welcome')}>
             Start over
           </button>
