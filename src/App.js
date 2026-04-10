@@ -383,7 +383,6 @@ function App() {
   const [leftShape, setLeftShape] = useState('A');
   const [trialPhase, setTrialPhase] = useState('choice');
   const [choices, setChoices] = useState([]);
-  const [userPosition, setUserPosition] = useState(null);
 
   const styles = {
     container: {
@@ -664,16 +663,7 @@ function App() {
                         ((probs.win_dissent + probs.lose_dissent) / 2);
     const rewardEffect = ((probs.win_consensus + probs.win_dissent) / 2) - 
                      ((probs.lose_consensus + probs.lose_dissent) / 2);
-    let interpretation;
-    if (rewardEffect > 10 && consensusEffect <= 10) {
-      interpretation = "Your decision pattern is consistent with imitation: you stayed more with winning choices regardless of what others chose. This suggests you're copying successful actions rather than seeking social agreement."; 
-    } else if (consensusEffect > 10 && rewardEffect <= 10) {
-      interpretation = "Your decision pattern is consistent with the social reward model: you stayed more with consensus choices regardless of winning. This suggests agreement itself feels rewarding to you.";
-    } else if (rewardEffect > 10 && consensusEffect > 10) {
-      interpretation = "Your decision pattern shows both effects: you stayed more after wins AND after consensus. Both monetary reward and social agreement seem to influence your choices.";
-    } else {
-      interpretation = "Your decision pattern doesn't show a strong effect in either direction. With only 16 trials, this isn't unusual. The real experiment uses many more trials to detect these effects reliably.";
-    }
+
 
     // model fitting
     const { results: modelFitResults, best: bestModel } = fitModels(choices);
