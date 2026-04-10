@@ -242,9 +242,32 @@ function computeNLL(params, trials, modelType) {
     const beta = params[params.length - 1]; //decision noise 
     const probA = Math.exp(beta * valA) / Math.exp(beta * valA) + Math.exp(beta * valB);
     const probChosen = choice === 'A' ? probA : 1 - probA;
-    
+
     // nll
     nll -= Math.log(Math.max(probChosen, 1e-10));  // clamp to avoid log(0)
+  
+    // update vals on feedback trials
+    const reward = trial.outcome === 'win' ? 1 : 0;
+    const consensus = trial.condition.social === 'consensus' ? 2 : 0;
+
+    // update freq for UCB
+    freqVals[choice] += 1;
+
+    if (modelType === 'hybrid') {
+      // params: [alpha_money, alpha_imitation, alpha_social, beta]
+      actVals[choice] += params[1] * (consensus - actVals[choice]);
+      payVals[choice] += params[0] * (reward - payVals[choice]) + params[2] * (consensus - payVals[choice]);
+    } else if (modelType === 'imitation') {
+      // params: [alpha_money, alpha_imitation, beta]
+      actVals[choice] += params[1] * (consensus - actVals[choice]);
+      payVals[choice] += params[0] * (reward - payVals[choice]);
+    } else if (modelType === 'social') {
+      // params: [alpha_money, alpha_social, beta]
+      sumVals[choice] += params[0] * (reward - sumVals[choice]) + params[1] * (consensus - sumVals[choice]);
+    } else if (modelType === 'baseline') {
+      // params: [alpha_money, beta]
+      sumVals[choice] += params[0] * (reward - sumVals[choice]);
+    }
   }
 
   return nll;
